@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-import numpy as np
+from numpy import cos, sin, tan, min, arccos, abs, linspace, pi
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -16,42 +16,42 @@ def plot_graph():
         incidence = incidence_var.get()
 
         # Conversion de l'angle en radians
-        angle = (90 - angle_degre) * np.pi / 180
+        angle = (90 - angle_degre) * pi / 180
 
         # Définition de l'indice en fonction de l'onde incidente
         indice = 2 if incidence == "Longitudinale" else 3
 
         # Définition des vitesses et du tracé
         vitesses = [cl1, ct1, -cl2, -ct2]
-        theta = np.linspace(0, np.pi, 100)
-        pente = np.tan(angle)
-        incident = np.linspace(-np.cos(angle) / np.abs(vitesses[indice]), 0, 50)
+        theta = linspace(0, pi, 100)
+        pente = tan(angle)
+        incident = linspace(-cos(angle) / abs(vitesses[indice]), 0, 50)
 
         # Nettoyage de l'ancienne figure
         ax.clear()
 
         # Tracé des courbes de lenteur
         for i in range(len(vitesses)):
-            x = (1 / vitesses[i]) * np.cos(theta)
-            y = (1 / vitesses[i]) * np.sin(theta)
+            x = (1 / vitesses[i]) * cos(theta)
+            y = (1 / vitesses[i]) * sin(theta)
             ax.plot(y, x, 'b' if i % 2 == 0 else 'r')
 
         ax.set_aspect('equal')
         ax.axvline(x=0, c='black')
 
         # Annotations
-        ax.annotate('Aluminium', xy=(0.25 / np.min(np.abs(vitesses)), -1 / np.min(np.abs(vitesses))))
-        ax.annotate('Laiton', xy=(-0.75 / np.min(np.abs(vitesses)), -1 / np.min(np.abs(vitesses))))
+        ax.annotate('Aluminium', xy=(0.25 / min(abs(vitesses)), -1 / min(abs(vitesses))))
+        ax.annotate('Laiton', xy=(-0.75 / min(abs(vitesses)), -1 / min(abs(vitesses))))
 
         # Tracé des ondes réfléchies et transmises
         ax.plot(incident * pente, incident)
-        ax.axhline(-np.cos(angle) / np.abs(vitesses[indice]), linestyle='--', color="gray")
-        ax.axhline(np.cos(angle) / np.abs(vitesses[indice]), linestyle='--', color="gray")
+        ax.axhline(-cos(angle) / abs(vitesses[indice]), linestyle='--', color="gray")
+        ax.axhline(cos(angle) / abs(vitesses[indice]), linestyle='--', color="gray")
 
-        ax.plot(incident * np.tan(np.arccos(np.cos(angle) / np.abs(vitesses[indice]) * ct2)), -incident)
-        ax.plot(-incident * np.tan(np.arccos(np.cos(angle) / np.abs(vitesses[indice]) * ct1)), -incident)
-        ax.plot(incident * np.tan(np.arccos(np.cos(angle) / np.abs(vitesses[indice]) * cl2)), -incident)
-        ax.plot(-incident * np.tan(np.arccos(np.cos(angle) / np.abs(vitesses[indice]) * cl1)), -incident)
+        ax.plot(incident * tan(arccos(cos(angle) / abs(vitesses[indice]) * ct2)), -incident)
+        ax.plot(-incident * tan(arccos(cos(angle) / abs(vitesses[indice]) * ct1)), -incident)
+        ax.plot(incident * tan(arccos(cos(angle) / abs(vitesses[indice]) * cl2)), -incident)
+        ax.plot(-incident * tan(arccos(cos(angle) / abs(vitesses[indice]) * cl1)), -incident)
 
         ax.invert_yaxis()
         ax.set_xticks([])
